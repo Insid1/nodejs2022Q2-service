@@ -8,7 +8,7 @@ const errorMessage = 'FS operation failed';
 
 const dirPath = path.join(__dirname, 'files');
 const fileToRename = path.join(dirPath, 'wrongFilename.txt');
-const renameText = 'properFilename.md';
+const renameText = path.join(dirPath, 'properFilename.md');
 
 export const rename = async () => {
     // check access to wrongFileName (err DONT exist throw err)
