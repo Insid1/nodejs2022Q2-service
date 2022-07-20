@@ -24,7 +24,4 @@ export const rename = async () => {
         if (err) throw Error(err);
         console.log('renaming successfully initialized!');
     })
-
 };
-
-rename();
