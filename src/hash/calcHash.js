@@ -16,5 +16,3 @@ export const calculateHash = async () => {
 
   return hashSum.digest('hex');
 };
-
-console.log(await calculateHash());
