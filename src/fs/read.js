@@ -1,18 +1,20 @@
-import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
+import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
+import { stdout } from 'process';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const errorMessage = 'FS operation failed';
 
-const dirPath = path.join(__dirname, 'files');
-const fileToRead = path.join(dirPath, 'fileToRead.txt');
+const srcDirPath = path.join(__dirname, 'files');
+const srcFile = path.join(srcDirPath, 'fileToRead.txt');
 
 export const read = async () => {
-  const data = await fs.readFile(fileToRead, (err, data) => {
-    if (err) throw Error(errorMessage);
-    console.log(data.toString());
-  })
+  try {
+    const fileText = await fs.readFile(srcFile, { encoding: 'utf-8' });
+    stdout.write(fileText);
+  } catch {
+    throw Error(errorMessage);
+  }
 };
 read();

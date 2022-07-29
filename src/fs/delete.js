@@ -1,16 +1,19 @@
-import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
+import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const errorMessage = 'FS operation failed';
 
-const dirPath = path.join(__dirname, 'files');
-const fileToRemove = path.join(dirPath, 'fileToRemove.txt');
+const srcDirPath = path.join(__dirname, 'files');
+const fileToRemove = path.join(srcDirPath, 'fileToRemove.txt');
 
 export const remove = async () => {
-  await fs.rm(fileToRemove, {}, (err) => {
-    if err throw Error(errorMessage);
-  })
+  try {
+    await fs.rm(fileToRemove);
+  } catch {
+    throw new Error(errorMessage);
+  }
 };
+
+remove();

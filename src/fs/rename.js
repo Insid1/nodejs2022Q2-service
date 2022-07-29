@@ -1,27 +1,24 @@
-import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
+import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const errorMessage = 'FS operation failed';
 
-const dirPath = path.join(__dirname, 'files');
-const fileToRename = path.join(dirPath, 'wrongFilename.txt');
-const renameText = path.join(dirPath, 'properFilename.md');
+const srcDirPath = path.join(__dirname, 'files');
+const srcFile = path.join(srcDirPath, 'wrongFilename.txt');
+const newFileName = 'properFilename.md';
+const destFile = path.join(srcDirPath, newFileName);
 
 export const rename = async () => {
-    // check access to wrongFileName (err DONT exist throw err)
-    await fs.access(fileToRename, fs.constants.F_OK, (err) => {
-        if (err) throw Error(errorMessage);
-    })
-    // check access to properfileName (if exists throw err)
-    await fs.access(path.join(dirPath, renameText), fs.constants.F_OK, (err) => {
-        if (!err) throw Error(errorMessage);
-    })
-    // rename the file
-    await fs.rename(fileToRename, renameText, (err) => {
-        if (err) throw Error(err);
-        console.log('renaming successfully initialized!');
-    })
+  // handle file existence
+  const destFileData = await fs.readFile(srcFile).catch(() => (null));
+  if (destFileData !== null) { throw Error(errorMessage); }
+
+  try {
+    await fs.rename(srcFile, destFile);
+  } catch {
+    throw Error(errorMessage);
+  }
 };
+rename();
